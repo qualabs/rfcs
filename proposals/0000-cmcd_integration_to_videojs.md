@@ -5,15 +5,10 @@
 # Summary
 [summary]: #summary
 
-One paragraph explanation of the feature.
-
 This RFC proposes the implementation of Common Media Client Data (CMCD) support in the Video.js player. CMCD is a standardized approach for exchanging data between clients and content delivery networks (CDNs) to optimize content delivery and improve user experiences.
 
 # Motivation
 [motivation]: #motivation
-
-Why are we doing this? What use cases does it support? What is the expected outcome?
-Consider listing any specific Goals and Non-Goals as sub-sections.
 
 The motivation behind adding CMCD support to video.js is to enable personalized video delivery and optimize the viewing experience for individual clients. CMCD allows CDNs to tailor video delivery parameters, such as bitrate, resolution, and buffer size, to specific client characteristics and network conditions. By including CMCD support, video.js can empower developers to provide adaptive video streaming experiences that adapt to each viewer's capabilities, resulting in improved video quality, reduced buffering, and optimized bandwidth usage.
 
@@ -25,18 +20,58 @@ The motivation behind adding CMCD support to video.js is to enable personalized 
 
 
 ## Non-Goals
-- This proposal does not aim to define the CMCD standard itself but rather to integrate its support into video.js.
-- It does not cover the implementation details of specific CDNs or how they handle CMCD data.
+- This proposal does not aim to define the CMCD standard itself but rather to integrate it's support into video.js.
+- It does not cover the implementation details of specific CDN's or how they handle CMCD data.
 
 
 # Guide-level Explanation
 [guide-level-explanation]: #guide-level-explanation
 
-Explain the proposal as if it was already included in the API and you were teaching it to another developer. That generally means:
+The implementation of CMCD support in the Video.js player introduces new concepts and functionalities that enable developers to optimize content delivery and enhance user experience.
 
-* Introducing new named concepts.
-* Explaining the feature largely in terms of examples.
-* If applicable, provide sample error messages.
+### Enabling CMCD
+Developers can easily enable CMCD in the Video.js player by utilizing the provided API. Here's an example:
+
+#### 1. Enabling CMCD with Default Parameters:
+
+```javascript
+var options = {
+  cmcd: true
+};
+
+var player = videojs('my-video-player', options);
+```
+
+In this example, the cmcd option is set to true without providing custom parameters. When cmcd is set to true, the Video.js player will utilize default parameters for CMCD, such as auto-generating a Session ID (SID) and using query parameters for CMCD transmission.
+
+#### 2. Enabling CMCD with Custom Parameters:
+```javascript
+var options = {
+  cmcd: {
+    sid: 'session-id',
+    cid: 'content-id',
+    useHeaders: true
+  }
+};
+
+var player = videojs('my-video-player', options);
+```
+In this example, the cmcd option is passed when initializing the Video.js player. By setting useHeaders to true, CMCD data will be transmitted through headers. Developers can also set the Content ID (CID) and Session ID (SID) to their desired values, such as 'content-id' and 'session-id', respectively.
+
+### CMCD Transmission through Query Parameters or Headers
+
+CMCD data can be transmitted to CDN's either through query parameters or headers, providing flexibility based on CDN capabilities. The examples above demonstrate the usage of headers by setting useHeaders to true. If useHeaders is set to false (or omitted), the CMCD data will be transmitted through query parameters instead.
+
+Developers can choose the transmission method that aligns with their CDN requirements and implementation preferences.
+
+### Content ID (CID) and Session ID (SID)
+
+The Content ID (CID) is a unique identifier that represents the content being played. The Session ID (SID) is an identifier that represents a specific session or viewing session for the client.
+
+Developers can set the CID and SID values according to their application requirements. It's important to ensure that these ID's are unique and persistent for each client or session.
+
+For more information about CMCD and it's parameters, you can refer to the [ CTA-5004 Standard ](https://cdn.cta.tech/cta/media/media/resources/standards/pdfs/cta-5004-final.pdf).
+
 
 # Reference-level explanation
 [reference-level-explanation]: #reference-level-explanation
